@@ -8,8 +8,10 @@ namespace Inoa.Configurations.Extensions
 {
 	public static class ServiceCollectionExtension
 	{
-		public static void AddConfigurationOptions(IConfiguration configuration)
+		public static void AddConfigurationOptions()
 		{
+			var configuration = ConfiguracaoFabrica.Criar();
+
 			var brapiApiDevOpcoes = configuration.GetSection("BrapiApiDev").Get<BrapiApiOptions>();
 			var servidorSmtpOpcoes = configuration.GetSection("ServidorSmtp").Get<ServidorSmtpOptions>();
 
