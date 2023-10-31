@@ -22,6 +22,10 @@ namespace Inoa.Dominio.Entidades.Cotacoes
 		{
 			try
 			{
+				if (valorDouble.Contains("."))
+					valorDouble = valorDouble.Replace(".", ",");
+
+				var teste = double.Parse(valorDouble);
 				return double.Parse(valorDouble);
 			}
 			catch (Exception ex)
