@@ -10,6 +10,8 @@ namespace Inoa
 	{
 		static async Task Main(string[] args)
 		{
+			double valorCotacao = 0;
+
 			if (args.Length != 3)
 			{
 				Console.WriteLine("Informe os parâmetros 'Ativo', 'Preço de Venda' e 'Preço de Compra' (nesta ordem).");
@@ -25,17 +27,22 @@ namespace Inoa
 
 			var cotacao = new Cotacao(ativo, precoVenda, precoCompra);
 
-			while (Console.ReadKey().Key != ConsoleKey.Escape)
+			while (true)
 			{
-				var valorCotacao = await CotacaoServicoExterno.ObterCotacao(cotacao.Ativo);
+				var valorCotacaoAtual = await CotacaoServicoExterno.ObterCotacao(cotacao.Ativo);
 
-				if (valorCotacao > cotacao.PrecoVenda)
-					EmailServicoExterno.EnviarEmail("Aconselhamento para Venda", $"O valor da cotação B3 ({valorCotacao}) atingiu o valor estipulado para venda.");
+				if (valorCotacaoAtual != valorCotacao)
+				{
+					valorCotacao = valorCotacaoAtual;
 
-				if (valorCotacao < cotacao.PrecoCompra)
-					EmailServicoExterno.EnviarEmail("Aconselhamento para Compra", $"O valor da cotação B3 ({valorCotacao}) atingiu o valor estipulado para compra.");
+					if (valorCotacaoAtual > cotacao.PrecoVenda)
+						EmailServicoExterno.EnviarEmail($"Cotação {ativo} pronta para venda.", $"O valor da cotação {ativo} ({valorCotacaoAtual}) atingiu o valor estipulado para venda ({cotacao.PrecoVenda}).");
 
-				Thread.Sleep(TimeSpan.FromSeconds(5));
+					if (valorCotacaoAtual < cotacao.PrecoCompra)
+						EmailServicoExterno.EnviarEmail($"Cotação {ativo} pronta para Compra.", $"O valor da cotação {ativo} ({valorCotacaoAtual}) atingiu o valor estipulado para compra ({cotacao.PrecoCompra}).");
+
+					Thread.Sleep(TimeSpan.FromSeconds(5));
+				}
 			}
 		}
 	}
