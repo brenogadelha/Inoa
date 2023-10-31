@@ -3,41 +3,40 @@ using Inoa.Configurations.Extensions;
 using Inoa.Dominio.Entidades.Cotacoes;
 using Inoa.ServicoExterno.Cotacoes;
 using Inoa.ServicoExterno.Emails;
-using Microsoft.Extensions.DependencyInjection;
 
-class Program
+namespace Inoa
 {
-	static async Task Main(string[] args)
+	class Program
 	{
-		var serviceCollection = new ServiceCollection();
-
-		var configuration = ConfiguracaoFabrica.Criar();
-
-		serviceCollection.AddConfigurationOptions(configuration);
-
-		if (args.Length != 3)
+		static async Task Main(string[] args)
 		{
-			Console.WriteLine("Informe os parâmetros 'Ativo', 'Preço de Venda' e 'Preço de Compra' (nesta ordem).");
-			return;
-		}
+			if (args.Length != 3)
+			{
+				Console.WriteLine("Informe os parâmetros 'Ativo', 'Preço de Venda' e 'Preço de Compra' (nesta ordem).");
+				return;
+			}
 
-		string ativo = args[0];
-		double precoVenda = double.Parse(args[1]);
-		double precoCompra = double.Parse(args[2]);
+			string ativo = args[0];
+			string precoVenda = args[1];
+			string precoCompra = args[2];
 
-		var cotacao = new Cotacao(ativo, precoVenda, precoCompra);
+			var configuration = ConfiguracaoFabrica.Criar();
+			ServiceCollectionExtension.AddConfigurationOptions(configuration);
 
-		while(Console.ReadKey().Key != ConsoleKey.Escape)
-		{
-			var valorCotacao = await CotacaoServicoExterno.ObterCotacao(cotacao.Ativo);
+			var cotacao = new Cotacao(ativo, precoVenda, precoCompra);
 
-			if (valorCotacao > cotacao.PrecoVenda)
-				EmailServicoExterno.EnviarEmail("Aconselhamento para Venda", $"O valor da cotação B3 ({valorCotacao}) atingiu o valor estipulado para venda.");
+			while (Console.ReadKey().Key != ConsoleKey.Escape)
+			{
+				var valorCotacao = await CotacaoServicoExterno.ObterCotacao(cotacao.Ativo);
 
-			if (valorCotacao < cotacao.PrecoCompra)
-				EmailServicoExterno.EnviarEmail("Aconselhamento para Compra", $"O valor da cotação B3 ({valorCotacao}) atingiu o valor estipulado para compra.");
+				if (valorCotacao > cotacao.PrecoVenda)
+					EmailServicoExterno.EnviarEmail("Aconselhamento para Venda", $"O valor da cotação B3 ({valorCotacao}) atingiu o valor estipulado para venda.");
 
-			Thread.Sleep(TimeSpan.FromSeconds(5));
+				if (valorCotacao < cotacao.PrecoCompra)
+					EmailServicoExterno.EnviarEmail("Aconselhamento para Compra", $"O valor da cotação B3 ({valorCotacao}) atingiu o valor estipulado para compra.");
+
+				Thread.Sleep(TimeSpan.FromSeconds(5));
+			}
 		}
 	}
 }

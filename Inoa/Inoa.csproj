@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -23,6 +23,12 @@
     <ProjectReference Include="..\Inoa.Dominio\Inoa.Dominio.csproj" />
     <ProjectReference Include="..\Inoa.Infraestrutura\Inoa.Infraestrutura.csproj" />
     <ProjectReference Include="..\Inoa.ServicoExterno\Inoa.ServicoExterno.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Program.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
