@@ -7,7 +7,7 @@ namespace Inoa.ServicoExterno.Emails
 {
 	public static class EmailServicoExterno
 	{
-		public static void EnviarEmail(string assunto, string corpo)
+		public static void EnviarEmail(string assunto, string corpo, string tipoEnvio)
 		{
 			var notificacao = new Notificacao(AppSettings.ServidorSmtp!.EmailRemetente, AppSettings.ServidorSmtp!.EmailDestinatario, assunto, corpo);
 
@@ -29,7 +29,7 @@ namespace Inoa.ServicoExterno.Emails
 			try
 			{
 				smtpClient.Send(email);
-				Console.WriteLine("E-mail enviado com sucesso!");
+				Console.WriteLine($"E-mail para {tipoEnvio} enviado com sucesso!");
 			}
 			catch (Exception ex)
 			{
